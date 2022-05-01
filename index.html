@@ -134,7 +134,7 @@
       const query = document.getElementById("query").value;
 
       let res = await fetch(
-        `http://www.omdbapi.com/?apikey=2b79427&s=${query}`
+        `https://www.omdbapi.com/?apikey=2b79427&s=${query}`
       );
 
       let data = await res.json();
