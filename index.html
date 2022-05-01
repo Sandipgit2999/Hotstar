@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: rgb(2, 2, 28);
+      }
+      #movies {
+        border: 1px solid black;
+        height: 300px;
+        width: 280px;
+        border-top: none;
+        overflow: scroll;
+        color: white;
+        background-color: darkslategray;
+        justify-self: end;
+        background-color: black;
+      }
+      #query {
+        width: 275px;
+      }
+
+      #show {
+        margin-top: 50px;
+        margin-left: 50px;
+        display: grid;
+        grid-template-columns: repeat(4, 22%);
+        grid-template-rows: auto;
+        border: 1px solid black;
+        height: 100%;
+        width: 100%;
+        gap: 25px;
+      }
+      #show > div {
+        gap: 15px;
+        background-color: black;
+        color: white;
+        height: 400px;
+        text-align: center;
+        border-radius: 10px;
+      }
+      img {
+        width: 100%;
+        height: 70%;
+      }
+      h1 {
+        color: white;
+      }
+      a {
+        color: white;
+      }
+      #head {
+        display: flex;
+
+        justify-content: space-between;
+        margin-left: 30px;
+        background-color: rgb(3, 15, 21);
+        padding-left: 20px;
+      }
+      #bhool {
+        height: 322px;
+        width: 50%;
+      }
+      #BhoolBhoolaiya {
+        color: white;
+      }
+      h1 > img {
+        height: 150px;
+        width: 20%;
+        margin: auto;
+        justify-content: end;
+      }
+      #trending {
+        margin-left: 1300px;
+        margin-bottom: 100px;
+        height: 50px;
+        width: 200px;
+        background-color: darkblue;
+      }
+      h3{
+        color: white;
+        font-size: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <a id="trending" href="trending.html"> <h3>Trending Movies</h3></a>
+    <h1>
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkj8Mn-yaqEq_n9J9zTpKyv9fxmg-xtnSrjA&usqp=CAU"
+        alt=""
+      />
+    </h1>
+
+    <div id="head">
+      <div id="move">
+        <input
+          oninput="debounce(main,1000)"
+          type="text"
+          id="query"
+          placeholder="Search"
+        />
+        <div id="movies"></div>
+      </div>
+      <div id="BhoolBhoolaiya">
+        <h2>Bhool Bhoolaiya</h2>
+        <p>2 hr 18 min . 2007 . Comedy . U/A 13+ . Hindi</p>
+        <p>
+          Siddharth and Avni's life changes when they move <br />into his
+          ancestral home. In this maze of <br />
+          superstitions, how will they find their way?
+        </p>
+      </div>
+      <img
+        id="bhool"
+        src="https://img1.hotstarext.com/image/upload/f_auto,t_web_m_1x/sources/r1/cms/prod/8104/1118104-h-47b8678a27ba"
+        alt=""
+      />
+    </div>
+
+    <div id="show"></div>
+  </body>
+</html>
+
+<script>
+  let movies_div = document.getElementById("movies");
+  let id;
+  async function searchMovies() {
+    try {
+      const query = document.getElementById("query").value;
+
+      let res = await fetch(
+        `http://www.omdbapi.com/?apikey=2b79427&s=${query}`
+      );
+
+      let data = await res.json();
+      let movies = data.Search;
+      console.log(movies);
+      return movies;
+    } catch (err) {
+      console.log("err:", err);
+    }
+
+    // https://http://www.omdbapi.com/?apikey=2b79427&s=avenger
+  }
+
+  function appendMovies(data) {
+    movies_div.innerHTML = null;
+    data.forEach(function (el) {
+      let p = document.createElement("p");
+
+      p.innerText = el.Title;
+      p.style.cursor = "pointer";
+
+      movies_div.append(p);
+      p.addEventListener("click", function () {
+        console.log("el:", el);
+        hotshow(el);
+      });
+    });
+  }
+
+  async function main() {
+    let data1 = await searchMovies();
+
+    if (data1 == undefined) {
+      return false;
+    }
+    appendMovies(data1);
+  }
+
+  function debounce(func, delay) {
+    if (id) {
+      clearTimeout(id);
+    }
+    id = setTimeout(function () {
+      func();
+    }, delay);
+  }
+
+  function hotshow(el) {
+    
+    let div1 = document.createElement("div");
+
+    let poster = document.createElement("img");
+    poster.src = el.Poster;
+
+    let title1 = document.createElement("p");
+    title1.innerText = el.Title;
+    console.log(title1);
+
+    let year = document.createElement("p");
+    year.innerText = el.Year;
+
+    let imdb = document.createElement("p");
+    imdb.innerText = el.imdbID;
+
+    div1.append(poster, title1, year, imdb);
+
+    document.getElementById("show").append(div1);
+  }
+</script>
